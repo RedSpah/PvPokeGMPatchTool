@@ -74,13 +74,13 @@ namespace PvPokeGMPatchTool
                     mons.Add(newShadow);
                     mons.Add(newMon);
 
-                    Program.WriteLineQuiet($"Pokemon | Add | Added {(string)newMon["speciesName"]}, id: \"{(string)newMon["speciesId"]}\", and its shadow {(string)newShadow["speciesName"]}, id: \"{(string)newShadow["speciesId"]}\"");
+                    Program.WriteLineQuiet($"Pokemon | Add | Added {(string)newMon["speciesId"]} ({(string)newMon["speciesName"]}), and its shadow {(string)newShadow["speciesId"]} ({(string)newShadow["speciesName"]})");
                 }
                 else
                 {
                     mons.Add(newMon);
 
-                    Program.WriteLineQuiet($"Pokemon | Add | Added {(string)newMon["speciesName"]}, id: \"{(string)newMon["speciesId"]}\"");
+                    Program.WriteLineQuiet($"Pokemon | Add | Added {(string)newMon["speciesId"]} ({(string)newMon["speciesName"]})");
                 }
             }
             else if (change.Action == PatchAction.Delete)

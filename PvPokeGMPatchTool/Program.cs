@@ -68,6 +68,7 @@ namespace PvPokeGMPatchTool // Note: actual namespace depends on the project nam
                     Download = o.Download;
                     ForceDownload = o.ForceDownload;
                     Quiet = o.Quiet;
+                    Verbose = o.Verbose;
                     NoReset = o.NoReset;
 
                     if (string.IsNullOrWhiteSpace(o.GameMasterPath))
