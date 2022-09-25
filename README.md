@@ -10,7 +10,7 @@ Download the binary from [Releases](https://github.com/StadiumGaming/PvPokeGMPat
 
 Move the `Grumpig` folder found inside `Windows` to the `htdocs` folder in your xampp installation, most likely `C:/xampp/htdocs`. If you have no idea what that means, install PvPoke and its prerequisites first.
 
-##### OSX / Linus:
+##### OSX / Linux:
 
 Configure it yourself with the configuration options further down.
 
