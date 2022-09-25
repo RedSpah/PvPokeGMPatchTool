@@ -24,7 +24,7 @@ namespace PvPokeGMPatchTool
             {
                 JObject move = (JObject)moves.Where(x => (string)(((JObject)x)["moveId"]) == MoveIDStringConvert(change.Target)).First();
                 PatchObject(move, change.Changes);
-                Console.WriteLine($"Move | Modify | {change.Target} | Modified {change.Changes.Count} Fields");
+                Program.WriteLineQuiet($"Move | Modify | {change.Target} | Modified {change.Changes.Count} Fields");
             }
             else if (change.Action == PatchAction.Clone)
             {
@@ -76,7 +76,7 @@ namespace PvPokeGMPatchTool
                         }
                     }                 
                 }
-                Console.WriteLine($"Move | Clone | {change.Target} | Cloned into {(string)clonedMove["moveId"]}, modifying {change.Changes.Count} Fields, and added the new move to {monpatches} Pokemon");
+                Program.WriteLineQuiet($"Move | Clone | {change.Target} | Cloned into {(string)clonedMove["moveId"]}, modifying {change.Changes.Count} Fields, and added the new move to {monpatches} Pokemon");
             }
             else if (change.Action == PatchAction.Add)
             {
@@ -117,7 +117,7 @@ namespace PvPokeGMPatchTool
                     }
                 }
 
-                Console.WriteLine($"Move | Add | Added {(string)newMove["moveId"]}, adding it to movesets of {monsadded} Pokemon");
+                Program.WriteLineQuiet($"Move | Add | Added {(string)newMove["moveId"]}, adding it to movesets of {monsadded} Pokemon");
             }
             else if (change.Action == PatchAction.Delete)
             {
@@ -159,7 +159,7 @@ namespace PvPokeGMPatchTool
                         }                      
                     }
                 }
-                Console.WriteLine($"Move | Delete | {change.Target} | Deleted the move, removing it and its mods from {monsdeld} Pokemon, {movesdeld} in total");
+                Program.WriteLineQuiet($"Move | Delete | {change.Target} | Deleted the move, removing it and its mods from {monsdeld} Pokemon, {movesdeld} in total");
             }
         }
 

@@ -24,7 +24,7 @@ namespace PvPokeGMPatchTool
             {
                 JObject mon = (JObject)mons.Where(x => (string)(((JObject)x)["speciesId"]) == MonIDStringConvert(change.Target)).First();
                 PatchObject(mon, change.Changes);
-                Console.WriteLine($"Pokemon | Modify | {change.Target} | Modified {change.Changes.Count} Fields");
+                Program.WriteLineQuiet($"Pokemon | Modify | {change.Target} | Modified {change.Changes.Count} Fields");
             }
             else if (change.Action == PatchAction.Clone)
             {
@@ -44,7 +44,7 @@ namespace PvPokeGMPatchTool
                 }
 
                 mons.Add(clonedMon);
-                Console.WriteLine($"Pokemon | Clone | {change.Target} | Cloned into {(string)clonedMon["speciesId"]}, modifying {change.Changes.Count} Fields");
+                Program.WriteLineQuiet($"Pokemon | Clone | {change.Target} | Cloned into {(string)clonedMon["speciesId"]}, modifying {change.Changes.Count} Fields");
             }
             else if (change.Action == PatchAction.Add)
             {
@@ -74,18 +74,18 @@ namespace PvPokeGMPatchTool
                     mons.Add(newShadow);
                     mons.Add(newMon);
 
-                    Console.WriteLine($"Pokemon | Add | Added {(string)newMon["speciesName"]}, id: \"{(string)newMon["speciesId"]}\", and its shadow {(string)newShadow["speciesName"]}, id: \"{(string)newShadow["speciesId"]}\"");
+                    Program.WriteLineQuiet($"Pokemon | Add | Added {(string)newMon["speciesName"]}, id: \"{(string)newMon["speciesId"]}\", and its shadow {(string)newShadow["speciesName"]}, id: \"{(string)newShadow["speciesId"]}\"");
                 }
                 else
                 {
                     mons.Add(newMon);
 
-                    Console.WriteLine($"Pokemon | Add | Added {(string)newMon["speciesName"]}, id: \"{(string)newMon["speciesId"]}\"");
+                    Program.WriteLineQuiet($"Pokemon | Add | Added {(string)newMon["speciesName"]}, id: \"{(string)newMon["speciesId"]}\"");
                 }
             }
             else if (change.Action == PatchAction.Delete)
             {
-                Console.WriteLine($"Pokemon | Delete | {change.Target} | Don't delete mons you goober");
+                Program.WriteLineQuiet($"Pokemon | Delete | {change.Target} | Don't delete mons you goober");
             }
             else if (change.Action == PatchAction.AddMove)
             {
@@ -132,7 +132,7 @@ namespace PvPokeGMPatchTool
 
                     mon["fastMoves"] = fast;
                     mon["chargedMoves"] = charged;
-                    Console.WriteLine($"Pokemon | AddMove | {change.Target} | Added {addedfast} Fast Moves and {addedcharged} Charged Moves");
+                    Program.WriteLineQuiet($"Pokemon | AddMove | {change.Target} | Added {addedfast} Fast Moves and {addedcharged} Charged Moves");
                 }
             }
             else if (change.Action == PatchAction.DeleteMove)
@@ -191,7 +191,7 @@ namespace PvPokeGMPatchTool
 
                     mon["fastMoves"] = fast;
                     mon["chargedMoves"] = charged;
-                    Console.WriteLine($"Pokemon | DeleteMove | {target} | Deleted {delfast} Fast Moves and {delcharged} Charged Moves");
+                    Program.WriteLineQuiet($"Pokemon | DeleteMove | {target} | Deleted {delfast} Fast Moves and {delcharged} Charged Moves");
                 }
             }
         }

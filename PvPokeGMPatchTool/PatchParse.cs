@@ -10,14 +10,12 @@ namespace PvPokeGMPatchTool
 {
     static partial class PatchParse
     {
-        public static Dictionary<string, List<Change>> ParsePatchFile(string path_filename)
+        public static Dictionary<string, List<Change>> ParsePatchFile(JObject patch)
         {
             Dictionary<string, List<Change>> patchChanges = new Dictionary<string, List<Change>>();
 
-            JObject patchFile = JObject.Parse(File.ReadAllText(path_filename));
-
-            patchChanges["moves"] = ParseChanges((JArray)patchFile["moves"]);
-            patchChanges["pokemon"] = ParseChanges((JArray)patchFile["pokemon"]);
+            patchChanges["moves"] = ParseChanges((JArray)patch["moves"]);
+            patchChanges["pokemon"] = ParseChanges((JArray)patch["pokemon"]);
 
             return patchChanges;
         }
@@ -30,7 +28,7 @@ namespace PvPokeGMPatchTool
             {
                 if (!entry.ContainsKey("target") || !entry.ContainsKey("action"))
                 {
-                    throw new ArgumentException("Invalid Patch Entry (must have \"target\" and \"action\" fields");
+                    throw new ArgumentException("Invalid Patch Entry (must have \"target\" and \"action\" fields)");
                 }
 
                 string Target = (string)entry["target"];
@@ -41,6 +39,13 @@ namespace PvPokeGMPatchTool
                 if (entry.ContainsKey("changes"))
                 {
                     Changes = (JObject)entry["changes"];
+                }
+                else
+                {
+                    if (Action != PatchAction.Delete)
+                    {
+                        throw new ArgumentException("Invalid Patch Entry (non-Delete actions must have the \"changes\" field present)");
+                    }
                 }
 
                 changes.Add(new Change(Target, Action, Changes));
