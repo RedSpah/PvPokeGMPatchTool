@@ -10,40 +10,40 @@ namespace PvPokeGMPatchTool // Note: actual namespace depends on the project nam
     {
         public class Options
         {
-            [Option('p', "pure_gm_file", Default = "gamemaster_pure.json", HelpText = "File name to be used for the pure, unchanged gamemaster.json file. Superceded by custom pure gamemaster path.")]
+            [Option('p', "pure_gm_file", Required = false, Default = "gamemaster_pure.json", HelpText = "File name to be used for the pure, unchanged gamemaster.json file. Superceded by custom pure gamemaster path.")]
             public string PureGameMasterFile { get; set; }
 
-            [Option('P', "pure_gm_path", Default = "", HelpText = "Custom path to the pure gamemaster file.")]
+            [Option('P', "pure_gm_path", Required = false, Default = "", HelpText = "Custom path to the pure gamemaster file.")]
             public string PureGameMasterPath { get; set; }
 
-            [Option('d', "download", Default = false, HelpText = "If set to true, downloads the pure gamemaster from the PvPoke GitHub repo if not present. Otherwise, will create the pure gamemaster out of the already present one.")]
+            [Option('d', "download", Required = false, Default = false, HelpText = "If set to true, downloads the pure gamemaster from the PvPoke GitHub repo if not present. Otherwise, will create the pure gamemaster out of the already present one.")]
             public bool Download { get; set; }
 
-            [Option('D', "force_download", Default = false, HelpText = "If set to true, always downloads the pure gamemaster from the PvPoke GitHub repo, regardless if its already present or not.")]
+            [Option('D', "force_download", Required = false, Default = false, HelpText = "If set to true, always downloads the pure gamemaster from the PvPoke GitHub repo, regardless if its already present or not.")]
             public bool ForceDownload { get; set; }
 
-            [Option('f', "patch_path", Default = "./patch.json", HelpText = "Path to the patch file to use. (./patch.json by default)")]
+            [Option('f', "patch_path", Required = false, Default = "./patch.json", HelpText = "Path to the patch file to use. (./patch.json by default)")]
             public string PatchPath { get; set; }
 
-            [Option('q', "quiet", Default = false, HelpText = "Quiet mode, suppresses the printing of any messages except for errors.")]
+            [Option('q', "quiet", Required = false, Default = false, HelpText = "Quiet mode, suppresses the printing of any messages except for errors.")]
             public bool Quiet { get; set; }
 
-            [Option('r', "xampp_folder", Default = "pvpoke", HelpText = "The folder to use in xampp/htdocs if using the default configuration. Superceded by custom gamemaster folder path.")]
+            [Option('r', "xampp_folder", Required = false, Default = "pvpoke", HelpText = "The folder to use in xampp/htdocs if using the default configuration. Superceded by custom gamemaster folder path.")]
             public string XamppFolder { get; set; }
 
-            [Option('g', "gamemaster_file", Default = "gamemaster.json", HelpText = "File name to be used for the final gamemaster, and which may be used to prepare the pure gamemaster.")]
+            [Option('g', "gamemaster_file", Required = false, Default = "gamemaster.json", HelpText = "File name to be used for the final gamemaster, and which may be used to prepare the pure gamemaster.")]
             public string GameMasterFile { get; set; }
 
-            [Option('G', "gamemaster_path", Default = "", HelpText = "Custom path to the folder containing the gamemaster.")]
+            [Option('G', "gamemaster_path", Required = false, Default = "", HelpText = "Custom path to the folder containing the gamemaster.")]
             public string GameMasterPath { get; set; }
 
-            [Option('n', "noreset", Default = false, HelpText = "If set to true, doesn't execute a server reset action after updating the gamemaster.")]
+            [Option('n', "noreset", Required = false, Default = false, HelpText = "If set to true, doesn't execute a server reset action after updating the gamemaster.")]
             public bool NoReset { get; set; }
 
-            [Option('c', "custom_reset_script_path", Default = "", HelpText = "Path to the custom script to be executed to restart the apache server pvpoke is running on.")]
+            [Option('c', "custom_reset_script_path", Required = false, Default = "", HelpText = "Path to the custom script to be executed to restart the apache server pvpoke is running on.")]
             public string CustomResetScriptPath { get; set; }
 
-            [Option('v', "verbose", Default = false, HelpText = "Verbose output.")]
+            [Option('v', "verbose", Required = false, Default = false, HelpText = "Verbose output.")]
             public bool Verbose { get; set; }
         }
 
@@ -61,44 +61,50 @@ namespace PvPokeGMPatchTool // Note: actual namespace depends on the project nam
             string PureGameMasterPath = "";
             string PatchPath = "";
             string ResetScriptPath = "";
+            bool Exit = false;
 
-            Parser.Default.ParseArguments<Options>(args)
-                .WithParsed(o =>
+            int ParseRes = Parser.Default.ParseArguments<Options>(args).MapResult((opts) => {           
+                Download = opts.Download;
+                ForceDownload = opts.ForceDownload;
+                Quiet = opts.Quiet;
+                Verbose = opts.Verbose;
+                NoReset = opts.NoReset;
+
+                if (string.IsNullOrWhiteSpace(opts.GameMasterPath))
                 {
-                    Download = o.Download;
-                    ForceDownload = o.ForceDownload;
-                    Quiet = o.Quiet;
-                    Verbose = o.Verbose;
-                    NoReset = o.NoReset;
+                    GameMasterFolderPath = "../" + opts.XamppFolder + "/src/data";
+                }
+                else
+                {
+                    GameMasterFolderPath = opts.GameMasterPath;
+                }
 
-                    if (string.IsNullOrWhiteSpace(o.GameMasterPath))
-                    {
-                        GameMasterFolderPath = "../" + o.XamppFolder + "/src/data";
-                    }
-                    else
-                    {
-                        GameMasterFolderPath = o.GameMasterPath;
-                    }
+                GameMasterPath = GameMasterFolderPath + "/" + opts.GameMasterFile;
 
-                    GameMasterPath = GameMasterFolderPath + "/" + o.GameMasterFile;
+                if (string.IsNullOrWhiteSpace(opts.PureGameMasterPath))
+                {
+                    PureGameMasterPath = GameMasterFolderPath + "/" + opts.PureGameMasterFile;
+                }
+                else
+                {
+                    PureGameMasterPath = opts.PureGameMasterPath;
+                }
 
-                    if (string.IsNullOrWhiteSpace(o.PureGameMasterPath))
-                    {
-                        PureGameMasterPath = GameMasterFolderPath + "/" + o.PureGameMasterFile;
-                    }
-                    else
-                    {
-                        PureGameMasterPath = o.PureGameMasterPath;
-                    }
+                PatchPath = opts.PatchPath;
 
-                    PatchPath = o.PatchPath;
+                if (!string.IsNullOrWhiteSpace(opts.PureGameMasterPath))
+                {
+                    CustomResetScript = true;
+                    ResetScriptPath = opts.CustomResetScriptPath;
+                }
 
-                    if (!string.IsNullOrWhiteSpace(o.PureGameMasterPath))
-                    {
-                        CustomResetScript = true;
-                        ResetScriptPath = o.CustomResetScriptPath;
-                    }
-                });
+                return 0;
+            }, errs => { return 1; } );
+             
+            if (ParseRes != 0)
+            {
+                return;
+            }         
 
             WriteLineQuiet("=== Welcome to Grumpig 0.1! ===");
             WriteLineQuiet($"Patch File Path: {PatchPath}");

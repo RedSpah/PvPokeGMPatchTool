@@ -121,10 +121,15 @@ namespace PvPokeGMPatchTool
             }
             else if (change.Action == PatchAction.Delete)
             {
+                string movename = change.Target;
                 JObject move = (JObject)moves.Where(x => (string)(((JObject)x)["moveId"]) == MoveIDStringConvert(change.Target)).First();
                 bool delmovefast = ((int)move["energy"] == 0);
                 string moveID = (string)move["moveId"];
-                moves.Remove(move);
+
+                foreach (JObject tobedeleted in moves.Where(x => (string)(((JObject)x)["moveId"]) == moveID || IsModOf(moveID, (string)(((JObject)x)["moveId"]))).ToArray())
+                {
+                    moves.Remove(tobedeleted);
+                }            
 
                 int movesdeld = 0;
                 int monsdeld = 0;
@@ -139,13 +144,7 @@ namespace PvPokeGMPatchTool
                             JArray tmp = new JArray(fast.Where(x => (string)x != moveID && !IsModOf(moveID, (string)x)).ToArray());
                             movesdeld += (fast.Count() - tmp.Count());
                             mon["fastMoves"] = tmp;      
-                        }
-
-                        //if (fast.Remove(new JValue(moveID)))
-                        //{
-                        //    movesdeld++;
-                        //    mon["fastMoves"] = fast;
-                        //}                     
+                        }                   
                     }
                     else
                     {

@@ -6,6 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>Grumpig</AssemblyName>
+    <Title>Grumpig</Title>
+    <Version>0.1.0</Version>
+    <Authors>redspah</Authors>
   </PropertyGroup>
 
   <ItemGroup>
